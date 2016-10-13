@@ -118,7 +118,7 @@ public class UserSettingsView extends VerticalLayout implements View{
             });
 
         });
-        back.addClickListener(e->getUI().getNavigator().navigateTo(LoginScreenView.VIEW_NAME));
+        back.addClickListener(e->getUI().getNavigator().navigateTo(AdminWindowView.VIEW_NAME));
         wrongPass.setVisible(false);
         //cancel.addClickListener(e -> editCustomer(customer));
         setVisible(true);

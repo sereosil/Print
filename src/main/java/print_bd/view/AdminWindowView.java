@@ -47,6 +47,7 @@ public class AdminWindowView extends VerticalLayout implements View {
     Label newPasswordIsTooSmall = new Label("Пароль слишком короткий");
     //private final CheckBox changePasswordCheck = new CheckBox("Need to changeButton password?");
     private final Grid grid = new Grid();
+    private final Grid anotherGrid = new Grid();
     private final Button addNewBtn;
     private final TextField filter;
     // Кнопки
@@ -56,7 +57,7 @@ public class AdminWindowView extends VerticalLayout implements View {
     Button delete = new Button("Удалить",FontAwesome.TRASH_O);
     // Button addUser = new Button("Add User",FontAwesome.PLUS);
     CssLayout buttons = new CssLayout(save,delete);
-    @Autowired
+   @Autowired
     public AdminWindowView(UserRepository userRepository, UserRoleRepository roleRepository){
         this.userRepository=userRepository;
         this.roleRepository=roleRepository;
@@ -79,7 +80,7 @@ public class AdminWindowView extends VerticalLayout implements View {
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
         HorizontalLayout userRoleChange = new HorizontalLayout(viewCheck, addCheck, printCheck, adminCheck,buttons);
         VerticalLayout changeUser = new VerticalLayout(firstName,lastName,contact,userRoleChange,jobOfUser,passportNumber,email,newPasswordIsTooSmall,password);
-        addComponents(actions,grid,changeUser,userRoleChange);
+        addComponents(actions,grid,anotherGrid,changeUser,userRoleChange);
         setSpacing(true);
         actions.setSpacing(true);
         actions.setMargin(true);
@@ -95,6 +96,10 @@ public class AdminWindowView extends VerticalLayout implements View {
         grid.getColumn("id").setHeaderCaption("ID");
         grid.getColumn("firstName").setHeaderCaption("Имя");
         grid.getColumn("lastName").setHeaderCaption("Фамилия");
+        anotherGrid.setHeight(300,Unit.PIXELS);
+        anotherGrid.setColumns("id","roleName");
+        anotherGrid.getColumn("id").setHeaderCaption("ID");
+        anotherGrid.getColumn("roleName").setHeaderCaption("role");
         buttons.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -111,7 +116,7 @@ public class AdminWindowView extends VerticalLayout implements View {
             window.setContent(content);
             UI.getCurrent().addWindow(window);
             ok.addClickListener(u->{
-                UserRole userRole = new UserRole(adminCheck.getValue(), viewCheck.getValue(), addCheck.getValue(), printCheck.getValue());
+                UserRole userRole = new UserRole(adminCheck.getValue(), viewCheck.getValue(), addCheck.getValue(), printCheck.getValue(),null);
                 userService.setRole(userRole);
                 userNew.setUserRole(userRole);
                 newPasswordIsTooSmall.setVisible(false);
@@ -257,9 +262,11 @@ public class AdminWindowView extends VerticalLayout implements View {
         if (StringUtils.isEmpty(text)) {
             grid.setContainerDataSource(
                     new BeanItemContainer(User.class, userRepository.findAll()));
+            anotherGrid.setContainerDataSource(new BeanItemContainer(UserRole.class, roleRepository.findAll()));
         } else {
             grid.setContainerDataSource(new BeanItemContainer(User.class,
                     userRepository.findByLastNameStartsWithIgnoreCase(text)));
+            anotherGrid.setContainerDataSource(new BeanItemContainer(UserRole.class, roleRepository.findByAdmin(true)));
         }
     }
 }

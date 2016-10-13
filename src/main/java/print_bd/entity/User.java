@@ -5,6 +5,8 @@ package print_bd.entity;
  */
 
 import javax.persistence.*;
+import java.util.List;
+
 @Entity@Table(name="user_table")
 public class User {
     @Id
@@ -13,6 +15,8 @@ public class User {
     private String contact;
     @ManyToOne(fetch = FetchType.EAGER)
     private UserRole userRole;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<PrintCount> printPermissions;
     private String firstName;
     private String lastName;
     private String email;

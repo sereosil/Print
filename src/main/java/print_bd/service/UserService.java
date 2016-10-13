@@ -20,7 +20,7 @@ public class UserService {
     private final UserRoleRepository roleRepository;
     @Autowired
     public UserService(UserRepository repository,UserRoleRepository roleRepository){
-        this.repository=repository;
+        this.repository = repository;
         this.roleRepository = roleRepository;
     }
     public boolean haveUser(String email){
@@ -78,10 +78,10 @@ public class UserService {
             }
         }
     }
-    public void changePrintCount(UserRole userRole, PrintCount printCount){
+    /*public void changePrintCount(UserRole userRole, PrintCount printCount){
         userRole.setPrintCounts((List<PrintCount>) printCount);
         roleRepository.save(userRole);
-    }
+    }*/
     public boolean checkViewPermission(User user){
         if(user.getUserRole().isView()) return true;
         return false;

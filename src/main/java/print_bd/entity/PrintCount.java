@@ -1,6 +1,8 @@
 package print_bd.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -8,39 +10,67 @@ import java.util.Date;
  */
 @Entity
 public class PrintCount {
-    private Integer count;
-    private Double hoursInterval;
-    private Date interval;
-
+    @Id
+    @GeneratedValue
+    private Integer id;
+    private Integer permissiblePrints;
+    private long hoursInterval;
+    private Date timeOfLastPrint;
+    private Date timeOfPrint;
+    private Integer printCounter=0;
     protected PrintCount() {
     }
 
-    public PrintCount(Integer count, Double hoursInterval) {
-        this.count = count;
+    public PrintCount(Integer permissiblePrints, long hoursInterval) {
+        this.permissiblePrints = permissiblePrints;
         this.hoursInterval = hoursInterval;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Double getHoursInterval() {
+    public Date getTimeOfPrint() {
+        return timeOfPrint;
+    }
+
+    public void setTimeOfPrint(Date timeOfPrint) {
+        this.timeOfPrint = timeOfPrint;
+    }
+
+    public Integer getPrintCounter() {
+        return printCounter;
+    }
+
+    public void setPrintCounter(Integer printCounter) {
+        this.printCounter = printCounter;
+    }
+
+    public Integer getPermissiblePrints() {
+        return permissiblePrints;
+    }
+
+    public void setPermissiblePrints(Integer permissiblePrints) {
+        this.permissiblePrints = permissiblePrints;
+    }
+
+    public long getHoursInterval() {
         return hoursInterval;
     }
 
-    public void setHoursInterval(Double hoursInterval) {
+    public void setHoursInterval(long hoursInterval) {
         this.hoursInterval = hoursInterval;
     }
 
-    public Date getInterval() {
-        return interval;
+    public Date getTimeOfLastPrint() {
+        return timeOfLastPrint;
     }
 
-    public void setInterval(Date interval) {
-        this.interval = interval;
+    public void setTimeOfLastPrint(Date timeOfLastPrint) {
+        this.timeOfLastPrint = timeOfLastPrint;
     }
 }

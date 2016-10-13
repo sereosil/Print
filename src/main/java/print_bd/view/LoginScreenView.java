@@ -68,7 +68,7 @@ public class LoginScreenView extends VerticalLayout implements View{
         newPasswordIsTooSmall.setVisible(false);
         setSizeFull();
     }
-    //@Override
+   @Autowired
     public void init(){
         VerticalLayout loginScreenLayout = new VerticalLayout(email,password,newPassword,confirmPassword, okButton, changeButton);
         loginScreenLayout.setSpacing(true);

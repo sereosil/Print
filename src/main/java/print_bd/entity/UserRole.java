@@ -11,28 +11,38 @@ public class UserRole {
     @Id
     @GeneratedValue
     private Integer id;
+    private String roleName;
     private boolean admin = false;
     private boolean view = false;
     private boolean add = false;
     private boolean print = false;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<PrintCount> printCounts;
+    /*@ManyToMany(fetch = FetchType.EAGER)
+    private List<PrintCount> printCounts;*/
     protected UserRole() {
     }
 
-    public UserRole(boolean admin, boolean view, boolean add, boolean print) {
+    public UserRole(boolean admin, boolean view, boolean add, boolean print,String roleName) {
+        this.roleName = roleName;
         this.admin = admin;
         this.view = view;
         this.add = add;
         this.print = print;
     }
 
-    public List<PrintCount> getPrintCounts() {
+    /*public List<PrintCount> getPrintCounts() {
         return printCounts;
+    }*/
+
+    /*public void setPrintCounts(List<PrintCount> printCounts) {
+        this.printCounts = printCounts;
+    }*/
+
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setPrintCounts(List<PrintCount> printCounts) {
-        this.printCounts = printCounts;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 
     public Integer getId() {
