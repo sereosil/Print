@@ -1,7 +1,6 @@
 package print_bd.entity;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * Created by sereo_000 on 16.09.2016.
@@ -13,20 +12,22 @@ public class UserRole {
     private Integer id;
     private String roleName;
     private boolean admin = false;
-    private boolean view = false;
-    private boolean add = false;
-    private boolean print = false;
+    private boolean viewPrintHistory = false;
+    private boolean addSerialNumber = false;
+    private boolean printDocs = false;
+    private boolean acceptReprintRequest = false;
     /*@ManyToMany(fetch = FetchType.EAGER)
     private List<PrintCount> printCounts;*/
     protected UserRole() {
     }
 
-    public UserRole(boolean admin, boolean view, boolean add, boolean print,String roleName) {
+    public UserRole(boolean admin, boolean viewPrintHistory, boolean addSerialNumber, boolean printDocs,boolean acceptReprintRequest, String roleName) {
         this.roleName = roleName;
         this.admin = admin;
-        this.view = view;
-        this.add = add;
-        this.print = print;
+        this.viewPrintHistory = viewPrintHistory;
+        this.addSerialNumber = addSerialNumber;
+        this.printDocs = printDocs;
+        this.acceptReprintRequest=acceptReprintRequest;
     }
 
     /*public List<PrintCount> getPrintCounts() {
@@ -36,6 +37,14 @@ public class UserRole {
     /*public void setPrintCounts(List<PrintCount> printCounts) {
         this.printCounts = printCounts;
     }*/
+
+    public boolean isAcceptReprintRequest() {
+        return acceptReprintRequest;
+    }
+
+    public void setAcceptReprintRequest(boolean acceptReprintRequest) {
+        this.acceptReprintRequest = acceptReprintRequest;
+    }
 
     public String getRoleName() {
         return roleName;
@@ -61,27 +70,53 @@ public class UserRole {
         this.admin = admin;
     }
 
-    public boolean isView() {
-        return view;
+    public boolean isViewPrintHistory() {
+        return viewPrintHistory;
     }
 
-    public void setView(boolean view) {
-        this.view = view;
+    public void setViewPrintHistory(boolean viewPrintHistory) {
+        this.viewPrintHistory = viewPrintHistory;
     }
 
-    public boolean isAdd() {
-        return add;
+    public boolean isAddSerialNumber() {
+        return addSerialNumber;
     }
 
-    public void setAdd(boolean add) {
-        this.add = add;
+    public void setAddSerialNumber(boolean addSerialNumber) {
+        this.addSerialNumber = addSerialNumber;
     }
 
-    public boolean isPrint() {
-        return print;
+    public boolean isPrintDocs() {
+        return printDocs;
     }
 
-    public void setPrint(boolean print) {
-        this.print = print;
+    public void setPrintDocs(boolean printDocs) {
+        this.printDocs = printDocs;
+    }
+
+    @Override
+    public String toString() {
+        return roleName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserRole userRole = (UserRole) o;
+
+        if (admin != userRole.admin) return false;
+        if (viewPrintHistory != userRole.viewPrintHistory) return false;
+        if (addSerialNumber != userRole.addSerialNumber) return false;
+        if (printDocs != userRole.printDocs) return false;
+        if (id != null ? !id.equals(userRole.id) : userRole.id != null) return false;
+        return roleName != null ? roleName.equals(userRole.roleName) : userRole.roleName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
     }
 }

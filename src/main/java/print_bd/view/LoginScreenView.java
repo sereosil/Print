@@ -82,7 +82,7 @@ public class LoginScreenView extends VerticalLayout implements View{
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         this.user = (User) getUI().getSession().getAttribute(SESSION_USER_KEY);
         if(user!=null){
-            getUI().getNavigator().navigateTo(UserSettingsView.VIEW_NAME);
+            getUI().getNavigator().navigateTo(AdminWindowView.VIEW_NAME);
         }
     }
 

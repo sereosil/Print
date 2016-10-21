@@ -34,7 +34,6 @@ public class UserSettingsView extends VerticalLayout implements View{
     TextField email = new TextField("Email");
     TextField contact = new TextField("Телефон");
     TextField passportNumber = new TextField("Номер паспорта");
-    TextField jobOfUser = new TextField("Группа пользователей");
     Label annotation = new Label("Сменить пароль");
     Label wrongPass = new Label("Вы ввели неверный пароль или новый пароль не совпадает с подтверждаемым");
     PasswordField oldPassword =new PasswordField("Старый пароль");
@@ -81,13 +80,12 @@ public class UserSettingsView extends VerticalLayout implements View{
         lastName.setValue(user.getLastName());
         email.setValue(user.getEmail());
         contact.setValue(user.getContact());
-        jobOfUser.setValue(user.getJobOfUser());
-        jobOfUser.setReadOnly(true);
+
         passportNumber.setValue(user.getPassportNumber());
         HorizontalLayout actions = new HorizontalLayout(ok,back);
         actions.setMargin(true);
         actions.setSpacing(true);
-        VerticalLayout layout = new VerticalLayout(firstName,lastName,email,contact,jobOfUser,passportNumber,annotation,wrongPass,newPasswordIsTooSmall,newPasswordWasSet,oldPassword,newPassword,confirmPassword,actions);
+        VerticalLayout layout = new VerticalLayout(firstName,lastName,email,contact,passportNumber,annotation,wrongPass,newPasswordIsTooSmall,newPasswordWasSet,oldPassword,newPassword,confirmPassword,actions);
         addComponents(layout);
         setSpacing(true);
         setMargin(true);
@@ -134,7 +132,6 @@ public class UserSettingsView extends VerticalLayout implements View{
         userService.changeUserFirstName(user,firstName.getValue());
         userService.changeUserLastName(user,lastName.getValue());
         userService.changeUserPhone(user,contact.getValue());
-        userService.changeUserJob(user,jobOfUser.getValue());
         userService.changeUserPassportNumber(user,passportNumber.getValue());
         //String checkPasswordLength;
         //checkPasswordLength=newPassword.toString();

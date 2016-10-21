@@ -13,5 +13,6 @@ import java.util.List;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole,Integer>{
     List<UserRole> findByAdmin(boolean admin);
+    List<UserRole> findByRoleName(String roleName);
     //List<UserRole> findByPrintCount(List<PrintCount> printCounts);
 }

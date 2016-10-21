@@ -13,7 +13,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Integer>{
     List<User> findByLastNameStartsWithIgnoreCase(String lastName);
     List<User> findByContact(String contact);
-    List<User> findByUserRole(UserRole userRole);
+    //List<User> findByUserRole(UserRole userRole);
     List<User> findByEmail(String email);
     List<User> findByEmailAndPasswordHash(String email,String passwordHash);
     List<User> findByJobOfUser(String jobOfUser);

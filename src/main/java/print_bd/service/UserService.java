@@ -3,7 +3,6 @@ package print_bd.service;
 import com.vaadin.spring.annotation.SpringComponent;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import print_bd.entity.PrintCount;
 import print_bd.entity.User;
 import print_bd.entity.UserRole;
 import print_bd.repository.UserRepository;
@@ -55,6 +54,7 @@ public class UserService {
     public void setRole(UserRole role){
         roleRepository.save(role);
     }
+    public void deleteRole(UserRole role){roleRepository.delete(role);}
     /**
      * Update all users with email obtained from parameters
      * @throws RuntimeException if no user with such email
@@ -82,28 +82,33 @@ public class UserService {
         userRole.setPrintCounts((List<PrintCount>) printCount);
         roleRepository.save(userRole);
     }*/
-    public boolean checkViewPermission(User user){
-        if(user.getUserRole().isView()) return true;
+   /* public boolean checkViewPermission(User user){
+        if(user.getUserRole().isViewPrintHistory()) return true;
         return false;
     }
     public boolean checkAddPermission(User user){
-        if(user.getUserRole().isAdd()) return true;
+        if(user.getUserRole().isAddSerialNumber()) return true;
         return false;
     }
     public boolean checkPrintPermission(User user){
-        if(user.getUserRole().isPrint()) return true;
+        if(user.getUserRole().isPrintDocs()) return true;
         return false;
     }
     public boolean checkAdminPermission(User user){
         if(user.getUserRole().isAdmin()) return true;
         return false;
-    }
+    }*/
     public void addUser(User user){
         //User user = new User(firstName, lastName, contact, role, email,password);
         repository.save(user);
     }
     public void changeUserRole(User user,UserRole role){
-        user.setUserRole(role);
+        user.addUserRole(role);
+        repository.save(user);
+    }
+    public void setUserRoleList(User user,List<UserRole> userRole){
+        user.getUserRole().clear();
+        user.setUserRole(userRole);
         repository.save(user);
     }
 

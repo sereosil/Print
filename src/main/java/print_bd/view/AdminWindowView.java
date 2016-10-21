@@ -1,5 +1,6 @@
 package print_bd.view;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
@@ -19,6 +20,12 @@ import print_bd.repository.UserRepository;
 import print_bd.repository.UserRoleRepository;
 import print_bd.service.UserService;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import static print_bd.view.LoginScreenView.SESSION_USER_KEY;
 /**
  * Created by sereo_000 on 16.09.2016.
  */
@@ -47,7 +54,7 @@ public class AdminWindowView extends VerticalLayout implements View {
     Label newPasswordIsTooSmall = new Label("Пароль слишком короткий");
     //private final CheckBox changePasswordCheck = new CheckBox("Need to changeButton password?");
     private final Grid grid = new Grid();
-    private final Grid anotherGrid = new Grid();
+    private final TwinColSelect roleDragNDrop = new TwinColSelect();
     private final Button addNewBtn;
     private final TextField filter;
     // Кнопки
@@ -73,14 +80,14 @@ public class AdminWindowView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
-        //this.user = (User) getUI().getSession().getAttribute(SESSION_USER_KEY);
+        this.user = (User) getUI().getSession().getAttribute(SESSION_USER_KEY);
         init();
     }
     public void init() {
         HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
-        HorizontalLayout userRoleChange = new HorizontalLayout(viewCheck, addCheck, printCheck, adminCheck,buttons);
+        VerticalLayout userRoleChange = new VerticalLayout(roleDragNDrop,buttons);
         VerticalLayout changeUser = new VerticalLayout(firstName,lastName,contact,userRoleChange,jobOfUser,passportNumber,email,newPasswordIsTooSmall,password);
-        addComponents(actions,grid,anotherGrid,changeUser,userRoleChange);
+        addComponents(actions,grid,changeUser,userRoleChange);
         setSpacing(true);
         actions.setSpacing(true);
         actions.setMargin(true);
@@ -96,10 +103,12 @@ public class AdminWindowView extends VerticalLayout implements View {
         grid.getColumn("id").setHeaderCaption("ID");
         grid.getColumn("firstName").setHeaderCaption("Имя");
         grid.getColumn("lastName").setHeaderCaption("Фамилия");
-        anotherGrid.setHeight(300,Unit.PIXELS);
-        anotherGrid.setColumns("id","roleName");
-        anotherGrid.getColumn("id").setHeaderCaption("ID");
-        anotherGrid.getColumn("roleName").setHeaderCaption("role");
+        roleDragNDrop.setHeight(300,Unit.PIXELS);
+        roleDragNDrop.setNullSelectionAllowed(true);
+        roleDragNDrop.setMultiSelect(true);
+        roleDragNDrop.setImmediate(true);
+        roleDragNDrop.setLeftColumnCaption("All available roles");
+        roleDragNDrop.setRightColumnCaption("Roles of current user");
         buttons.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -116,9 +125,11 @@ public class AdminWindowView extends VerticalLayout implements View {
             window.setContent(content);
             UI.getCurrent().addWindow(window);
             ok.addClickListener(u->{
-                UserRole userRole = new UserRole(adminCheck.getValue(), viewCheck.getValue(), addCheck.getValue(), printCheck.getValue(),null);
-                userService.setRole(userRole);
-                userNew.setUserRole(userRole);
+                //UserRole userRole = new UserRole(adminCheck.getValue(), viewCheck.getValue(), addCheck.getValue(), printCheck.getValue(),null);
+                //userService.setUserRoleList(userNew,userRoles);
+                List<UserRole> userRoles=new ArrayList((Collection)roleDragNDrop.getValue());
+                userService.setUserRoleList(userNew,userRoles);
+                System.out.println(userRoles);
                 newPasswordIsTooSmall.setVisible(false);
                 if(!password.getValue().isEmpty()) {
                     userNew.setFirstName(firstName.getValue());
@@ -195,6 +206,7 @@ public class AdminWindowView extends VerticalLayout implements View {
 
                 //changeUser.setVisible(true);
                 this.editUser((User) grid.getSelectedRow());
+
             }
         });
         filter.setInputPrompt("Отфильтровать по фамилии");
@@ -202,7 +214,7 @@ public class AdminWindowView extends VerticalLayout implements View {
         addNewBtn.addClickListener(e -> {
             userRoleChange.setVisible(true);
             changeUser.setVisible(true);
-            editUser(new User("",userRole,"","","","","",""));
+            editUser(new User("","","","","","",""));
             //userRoleChange.setVisible(false);
             //changeUser.setVisible(false);
         });
@@ -228,19 +240,21 @@ public class AdminWindowView extends VerticalLayout implements View {
 
         if (persisted){
             userNew = userRepository.findOne(user.getId());
-            adminCheck.setValue(userNew.getUserRole().isAdmin());
-            addCheck.setValue(userNew.getUserRole().isAdd());
-            printCheck.setValue(userNew.getUserRole().isPrint());
-            viewCheck.setValue(userNew.getUserRole().isView());
+            ListRolesOfUser(userNew);
+            /*adminCheck.setValue(userNew.getUserRole().isAdmin());
+            addCheck.setValue(userNew.getUserRole().isAddSerialNumber());
+            printCheck.setValue(userNew.getUserRole().isPrintDocs());
+            viewCheck.setValue(userNew.getUserRole().isViewPrintHistory());*/
             //userService.changeUserRole(userNew,userRole);
             //userService.addUser(firstName.getValue(),lastName.getValue(),contact.getValue(),userRole,email.getValue(),password.getValue());
 
         }
         else {
             userNew = user;
+            ListRolesOfUser(userNew);
             /*UserRole userRole = new UserRole(adminCheck.getValue(), viewCheck.getValue(),addCheck.getValue(),confirmCheck.getValue());
             userService.setRole(userRole);
-            userNew.setUserRole(userRole);*/
+            userNew.addUserRole(userRole);*/
         }
         //save.setVisible(persisted);
 
@@ -262,11 +276,17 @@ public class AdminWindowView extends VerticalLayout implements View {
         if (StringUtils.isEmpty(text)) {
             grid.setContainerDataSource(
                     new BeanItemContainer(User.class, userRepository.findAll()));
-            anotherGrid.setContainerDataSource(new BeanItemContainer(UserRole.class, roleRepository.findAll()));
+
         } else {
             grid.setContainerDataSource(new BeanItemContainer(User.class,
                     userRepository.findByLastNameStartsWithIgnoreCase(text)));
-            anotherGrid.setContainerDataSource(new BeanItemContainer(UserRole.class, roleRepository.findByAdmin(true)));
         }
+    }
+    private void ListRolesOfUser(User user){
+        roleDragNDrop.setContainerDataSource(new BeanItemContainer(UserRole.class,
+                roleRepository.findAll()));
+        roleDragNDrop.setRows(roleDragNDrop.size());
+        roleDragNDrop.setValue(new HashSet<>(user.getUserRole()));
+
     }
 }

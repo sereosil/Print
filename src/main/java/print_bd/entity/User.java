@@ -5,6 +5,7 @@ package print_bd.entity;
  */
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity@Table(name="user_table")
@@ -13,8 +14,8 @@ public class User {
     @GeneratedValue
     private Integer id;
     private String contact;
-    @ManyToOne(fetch = FetchType.EAGER)
-    private UserRole userRole;
+    @ManyToMany(fetch = FetchType.EAGER)@Column(name = "print_user_role")
+    private List<UserRole> userRole = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
     private List<PrintCount> printPermissions;
     private String firstName;
@@ -27,9 +28,8 @@ public class User {
     protected User(){
     }
 
-    public User(String contact, UserRole userRole, String firstName, String lastName, String email, String passwordHash, String jobOfUser, String passportNumber) {
+    public User(String contact, String firstName, String lastName, String email, String passwordHash, String jobOfUser, String passportNumber) {
         this.contact = contact;
-        this.userRole = userRole;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -77,11 +77,17 @@ public class User {
         this.contact = contact;
     }
 
-    public UserRole getUserRole() {
+    public List<UserRole> getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(UserRole userRole) {
+    public void addUserRole(UserRole userRole) {
+        if (!this.userRole.contains(userRole)) {
+            this.userRole.add(userRole);
+        }
+    }
+
+    public void setUserRole(List<UserRole> userRole) {
         this.userRole = userRole;
     }
 
@@ -133,4 +139,5 @@ public class User {
                 ", Телефон: '" + contact + '\'' +
                 '}';
     }
+
 }
